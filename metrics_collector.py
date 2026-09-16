@@ -84,7 +84,10 @@ class MetricsCollector:
         errors = self._first_value(self.query_prometheus(error_query)) or 0.0
         if total <= 0:
             return 0.0
-        return (errors / total) * 100
+        # rate() over sparse, low-volume counters can overshoot 100% by a
+        # fraction of a percent when a burst of errors lands inside the
+        # window slightly unevenly - clamp to a valid percentage.
+        return min(100.0, max(0.0, (errors / total) * 100))
 
     def get_cpu_percent(self, component):
         """Signal 4/4 (a): container CPU utilization for the component."""
@@ -98,11 +101,16 @@ class MetricsCollector:
         value = self._first_value(self.query_prometheus(query))
         return value if value is not None else 0.0
 
-    def get_metrics_for_component(self, component):
-        """Collect one data point covering all 4 required signal types for a component."""
+    def get_metrics_for_component(self, component, scenario="normal"):
+        """Collect one data point covering all 4 required signal types for a component.
+
+        `scenario` labels the point as normal/degraded/recovering (RFP Section 6)
+        so Layer 5 can train on normal data and validate against the others.
+        """
         return {
             "timestamp": datetime.now().isoformat(),
             "component": component,
+            "scenario": scenario,
             "latency_p95_ms": round(self.get_latency_p95_ms(component), 2),
             "throughput_rps": round(self.get_throughput_rps(component), 4),
             "error_rate_pct": round(self.get_error_rate_pct(component), 4),
@@ -110,17 +118,17 @@ class MetricsCollector:
             "memory_percent": round(self.get_memory_percent(component), 4),
         }
 
-    def collect_from_all_components(self, duration_minutes=2, interval_seconds=10, components=None):
+    def collect_from_all_components(self, duration_minutes=2, interval_seconds=10, components=None, scenario="normal"):
         """Collect metrics from all 3 components repeatedly for the given duration."""
         components = components or COMPONENTS
-        print(f"Collecting metrics for {duration_minutes} minute(s)...\n")
+        print(f"Collecting metrics for {duration_minutes} minute(s)... [scenario={scenario}]\n")
 
         end_time = time.time() + (duration_minutes * 60)
         collection_count = 0
 
         while time.time() < end_time:
             for component in components:
-                metrics = self.get_metrics_for_component(component)
+                metrics = self.get_metrics_for_component(component, scenario=scenario)
                 self.data.append(metrics)
                 collection_count += 1
 
@@ -163,12 +171,22 @@ class MetricsCollector:
 
 
 if __name__ == "__main__":
-    collector = MetricsCollector()
+    import argparse
 
-    collector.collect_from_all_components(duration_minutes=2)
+    parser = argparse.ArgumentParser(description="Collect TelemetrixAI metrics from Prometheus")
+    parser.add_argument("--scenario", default="normal", choices=["normal", "degraded", "recovering"])
+    parser.add_argument("--duration", type=float, default=2.0, help="collection duration in minutes")
+    parser.add_argument("--interval", type=int, default=10, help="seconds between samples")
+    parser.add_argument("--out-prefix", default="data/metrics", help="output path prefix (no extension)")
+    args = parser.parse_args()
+
+    collector = MetricsCollector()
+    collector.collect_from_all_components(
+        duration_minutes=args.duration, interval_seconds=args.interval, scenario=args.scenario
+    )
 
     os.makedirs("data", exist_ok=True)
-    collector.save_to_csv("data/metrics.csv")
-    collector.save_to_parquet("data/metrics.parquet")
+    collector.save_to_csv(f"{args.out_prefix}.csv")
+    collector.save_to_parquet(f"{args.out_prefix}.parquet")
 
-    print("\nLayers 2-4: Metrics collected (4 signal types) and stored!")
+    print(f"\nLayers 2-4: Metrics collected (4 signal types, scenario={args.scenario}) and stored!")

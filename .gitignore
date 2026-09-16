@@ -9,3 +9,4 @@ mlartifacts/
 .env
 *.ollama
 data/_partitions/
+mlflow.db

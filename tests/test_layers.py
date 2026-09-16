@@ -74,6 +74,16 @@ def test_get_error_rate_pct_computes_ratio():
     assert rate == 5.0
 
 
+def test_get_error_rate_pct_clamps_to_100_on_rate_overshoot():
+    collector = MetricsCollector()
+    # rate() over sparse counters can make errors appear to exceed total
+    # within a window; the result must still be a valid percentage.
+    responses = [_prom_result(95.0), _prom_result(96.5)]
+    with patch.object(collector, "query_prometheus", side_effect=responses):
+        rate = collector.get_error_rate_pct("checkout")
+    assert rate == 100.0
+
+
 def test_get_cpu_percent_queries_container_metric():
     collector = MetricsCollector()
     with patch.object(collector, "query_prometheus", return_value=_prom_result(12.3)) as mock_q:
@@ -98,8 +108,20 @@ def test_get_metrics_for_component_returns_all_four_signals():
         metrics = collector.get_metrics_for_component("checkout")
 
     assert metrics["component"] == "checkout"
+    assert metrics["scenario"] == "normal"
     for signal in ("latency_p95_ms", "throughput_rps", "error_rate_pct", "cpu_percent", "memory_percent"):
         assert signal in metrics
+
+
+def test_get_metrics_for_component_accepts_scenario_label():
+    collector = MetricsCollector()
+    with patch.object(collector, "get_latency_p95_ms", return_value=9000.0), \
+         patch.object(collector, "get_throughput_rps", return_value=1.0), \
+         patch.object(collector, "get_error_rate_pct", return_value=45.0), \
+         patch.object(collector, "get_cpu_percent", return_value=90.0), \
+         patch.object(collector, "get_memory_percent", return_value=95.0):
+        metrics = collector.get_metrics_for_component("cart", scenario="degraded")
+    assert metrics["scenario"] == "degraded"
 
 
 def test_save_to_csv_writes_expected_columns(tmp_path):
@@ -108,6 +130,7 @@ def test_save_to_csv_writes_expected_columns(tmp_path):
         {
             "timestamp": "2026-01-01T00:00:00",
             "component": "checkout",
+            "scenario": "normal",
             "latency_p95_ms": 100.0,
             "throughput_rps": 5.0,
             "error_rate_pct": 0.0,
@@ -184,6 +207,12 @@ def test_all_three_components_present():
     df = pd.read_csv("data/metrics.csv")
     components = set(df["component"].unique())
     assert {"checkout", "product-catalog", "cart"}.issubset(components)
+
+
+def test_scenario_column_has_only_known_labels():
+    df = pd.read_csv("data/metrics.csv")
+    assert "scenario" in df.columns
+    assert set(df["scenario"].unique()).issubset({"normal", "degraded", "recovering"})
 
 
 def test_no_nulls_in_signal_columns():
