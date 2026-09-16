@@ -1,0 +1,18 @@
+# TelemetrixAI override: the upstream demo caps checkout and product-catalog
+# at 20MiB, which is tight enough that product-catalog thrashes under normal
+# load (observed: 92% mem, 212% CPU, 15s p95 latency at idle-ish traffic).
+# That makes "Normal" baseline data indistinguishable from a degraded
+# scenario. Raise the ceiling so baseline telemetry reflects healthy
+# behavior; Layer 5/6 scenario injection uses feature flags instead of
+# resource starvation to create degraded conditions on purpose.
+services:
+  checkout:
+    deploy:
+      resources:
+        limits:
+          memory: 200M
+  product-catalog:
+    deploy:
+      resources:
+        limits:
+          memory: 200M
