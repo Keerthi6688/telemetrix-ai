@@ -14,6 +14,11 @@ jobs:
         with:
           python-version: "3.14"
 
+      - uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
       - name: Install dependencies
         run: pip install -r requirements.txt
 
@@ -21,7 +26,7 @@ jobs:
         run: |
           python -m pytest tests/ \
             --cov=metrics_collector --cov=upload_to_minio --cov=anomaly_detection \
-            --cov=ai_annotation --cov=scenario_control \
+            --cov=ai_annotation --cov=scenario_control --cov=spark_processing \
             --cov-report=term-missing --cov-report=html --cov-fail-under=80
 
       - name: Upload coverage report
