@@ -173,7 +173,9 @@ def generate_report(results_csv="data/anomaly_results.csv", out_path="data/ai_re
         lines.append(render_deterministic(s))
 
     report = "\n".join(lines)
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    out_dir = os.path.dirname(out_path)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
     with open(out_path, "w") as f:
         f.write(report)
 

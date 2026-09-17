@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.4.0/schema.json",
+  "name": "vis_line",
+  "position": { "x": 20, "y": 70, "z": 0, "width": 620, "height": 280, "tabOrder": 0 },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "timestamp" } },
+              "queryRef": "anomaly_results.timestamp",
+              "nativeQueryRef": "timestamp"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": { "Aggregation": { "Expression": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "latency_p95_ms" } }, "Function": 1 } },
+              "queryRef": "Average(anomaly_results.latency_p95_ms)",
+              "nativeQueryRef": "Average of latency_p95_ms"
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "component" } },
+              "queryRef": "anomaly_results.component",
+              "nativeQueryRef": "component"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.4.0/schema.json",
+  "name": "vis_card",
+  "position": { "x": 980, "y": 70, "z": 0, "width": 280, "height": 130, "tabOrder": 2 },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": { "Aggregation": { "Expression": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "error_rate_pct" } }, "Function": 1 } },
+              "queryRef": "Average(anomaly_results.error_rate_pct)",
+              "nativeQueryRef": "Average of error_rate_pct"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

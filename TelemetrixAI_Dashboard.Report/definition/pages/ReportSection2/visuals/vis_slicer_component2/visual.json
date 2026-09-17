@@ -1,0 +1,21 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.4.0/schema.json",
+  "name": "vis_slicer_component2",
+  "position": { "x": 340, "y": 490, "z": 0, "width": 300, "height": 130, "tabOrder": 4 },
+  "visual": {
+    "visualType": "slicer",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "component" } },
+              "queryRef": "anomaly_results.component",
+              "nativeQueryRef": "component"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

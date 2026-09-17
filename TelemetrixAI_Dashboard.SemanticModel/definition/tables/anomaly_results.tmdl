@@ -1,0 +1,69 @@
+table anomaly_results
+
+	column timestamp
+		dataType: dateTime
+		formatString: General Date
+		sourceColumn: timestamp
+
+	column component
+		dataType: string
+		sourceColumn: component
+
+	column scenario
+		dataType: string
+		sourceColumn: scenario
+
+	column latency_p95_ms
+		dataType: double
+		sourceColumn: latency_p95_ms
+		summarizeBy: average
+
+	column throughput_rps
+		dataType: double
+		sourceColumn: throughput_rps
+		summarizeBy: average
+
+	column error_rate_pct
+		dataType: double
+		sourceColumn: error_rate_pct
+		summarizeBy: average
+
+	column cpu_percent
+		dataType: double
+		sourceColumn: cpu_percent
+		summarizeBy: average
+
+	column memory_percent
+		dataType: double
+		sourceColumn: memory_percent
+		summarizeBy: average
+
+	column anomaly_score
+		dataType: double
+		sourceColumn: anomaly_score
+		summarizeBy: average
+
+	column is_anomaly
+		dataType: int64
+		sourceColumn: is_anomaly
+		summarizeBy: sum
+
+	column flagged_signal
+		dataType: string
+		sourceColumn: flagged_signal
+
+	column signal_zscore
+		dataType: double
+		sourceColumn: signal_zscore
+		summarizeBy: average
+
+	partition anomaly_results = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\keerthiga.thirupathi\pSiddhi\OpenTelemetry\anomaly_results.csv"),[Delimiter=",", Columns=12, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"timestamp", type datetime}, {"component", type text}, {"scenario", type text}, {"latency_p95_ms", type number}, {"throughput_rps", type number}, {"error_rate_pct", type number}, {"cpu_percent", type number}, {"memory_percent", type number}, {"anomaly_score", type number}, {"is_anomaly", Int64.Type}, {"flagged_signal", type text}, {"signal_zscore", type number}})
+				in
+				    #"Changed Type"
+

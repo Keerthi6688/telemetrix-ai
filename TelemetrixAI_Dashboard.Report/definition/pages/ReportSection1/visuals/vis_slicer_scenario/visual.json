@@ -1,0 +1,21 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.4.0/schema.json",
+  "name": "vis_slicer_scenario",
+  "position": { "x": 980, "y": 220, "z": 0, "width": 135, "height": 130, "tabOrder": 3 },
+  "visual": {
+    "visualType": "slicer",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "scenario" } },
+              "queryRef": "anomaly_results.scenario",
+              "nativeQueryRef": "scenario"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

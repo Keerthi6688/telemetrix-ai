@@ -49,8 +49,13 @@ python metrics_collector.py
 # Archive it to MinIO, partitioned by component/date
 python upload_to_minio.py
 
-# Run the QA suite with measured coverage
-python -m pytest tests/ --cov=. --cov-report=term --cov-report=html
+# Run the QA suite with measured coverage (scoped to the 5 core pipeline
+# modules - `--cov=.` also counts one-off scratch_*.py utility scripts and
+# drags the number down without reflecting real pipeline coverage)
+python -m pytest tests/ \
+  --cov=metrics_collector --cov=upload_to_minio --cov=anomaly_detection \
+  --cov=ai_annotation --cov=scenario_control \
+  --cov-report=term --cov-report=html
 ```
 
 **UIs:** Jaeger `localhost:16686` · Prometheus `localhost:9090` · MinIO console `localhost:9001` · Astronomy Shop frontend `localhost:8080`

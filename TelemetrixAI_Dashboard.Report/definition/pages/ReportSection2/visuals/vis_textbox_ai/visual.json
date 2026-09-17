@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.4.0/schema.json",
+  "name": "vis_textbox_ai",
+  "position": { "x": 20, "y": 20, "z": 0, "width": 1240, "height": 150, "tabOrder": 0 },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  { "value": "AI-Annotated Performance Report", "textStyle": { "fontWeight": "bold", "fontSize": "14px" } }
+                ]
+              },
+              {
+                "textRuns": [
+                  { "value": "checkout: Degraded (severity: High). Out of 21 degraded-scenario observations, the Isolation Forest model flagged 81.0% as anomalous. Strongest anomaly driven by error_rate_pct (999.0 std. deviations from normal mean, anomaly score 0.1072). Normal-scenario false-positive rate: 10.4%." }
+                ]
+              },
+              {
+                "textRuns": [
+                  { "value": "product-catalog: Normal (severity: None). No degraded-scenario data captured; across 88 normal-baseline observations the false-positive rate was 10.2%, indicating a stable baseline." }
+                ]
+              },
+              {
+                "textRuns": [
+                  { "value": "cart: Normal (severity: None). No degraded-scenario data captured; across 88 normal-baseline observations the false-positive rate was 10.2%, indicating a stable baseline." }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

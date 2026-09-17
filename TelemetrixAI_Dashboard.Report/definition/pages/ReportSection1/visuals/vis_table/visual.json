@@ -1,0 +1,22 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.4.0/schema.json",
+  "name": "vis_table",
+  "position": { "x": 20, "y": 370, "z": 0, "width": 1240, "height": 320, "tabOrder": 5 },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            { "field": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "component" } }, "queryRef": "anomaly_results.component", "nativeQueryRef": "component" },
+            { "field": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "scenario" } }, "queryRef": "anomaly_results.scenario", "nativeQueryRef": "scenario" },
+            { "field": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "is_anomaly" } }, "queryRef": "anomaly_results.is_anomaly", "nativeQueryRef": "is_anomaly" },
+            { "field": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "flagged_signal" } }, "queryRef": "anomaly_results.flagged_signal", "nativeQueryRef": "flagged_signal" },
+            { "field": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "signal_zscore" } }, "queryRef": "anomaly_results.signal_zscore", "nativeQueryRef": "signal_zscore" },
+            { "field": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "error_rate_pct" } }, "queryRef": "anomaly_results.error_rate_pct", "nativeQueryRef": "error_rate_pct" }
+          ]
+        }
+      }
+    }
+  }
+}

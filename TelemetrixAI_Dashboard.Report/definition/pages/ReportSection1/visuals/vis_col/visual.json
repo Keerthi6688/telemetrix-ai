@@ -1,0 +1,30 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.4.0/schema.json",
+  "name": "vis_col",
+  "position": { "x": 660, "y": 70, "z": 0, "width": 300, "height": 280, "tabOrder": 1 },
+  "visual": {
+    "visualType": "clusteredColumnChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "component" } },
+              "queryRef": "anomaly_results.component",
+              "nativeQueryRef": "component"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": { "Aggregation": { "Expression": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "is_anomaly" } }, "Function": 0 } },
+              "queryRef": "Sum(anomaly_results.is_anomaly)",
+              "nativeQueryRef": "Sum of is_anomaly"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

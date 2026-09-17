@@ -90,7 +90,9 @@ def run(dataset_paths, contamination=0.1, out_csv="data/anomaly_results.csv"):
             comp_all["flagged_signal"] = [f[0] for f in flagged]
             comp_all["signal_zscore"] = [f[1] for f in flagged]
 
-            mlflow.sklearn.log_model(model, f"model_{component}")
+            mlflow.sklearn.log_model(
+                model, f"model_{component}", skops_trusted_types=["sklearn.tree._tree.Tree"]
+            )
 
             detection_rate = None
             degraded_rows = comp_all[comp_all["scenario"] == "degraded"]

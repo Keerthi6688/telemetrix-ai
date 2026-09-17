@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.4.0/schema.json",
+  "name": "vis_line_throughput",
+  "position": { "x": 640, "y": 190, "z": 0, "width": 620, "height": 280, "tabOrder": 2 },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "timestamp" } },
+              "queryRef": "anomaly_results.timestamp",
+              "nativeQueryRef": "timestamp"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": { "Aggregation": { "Expression": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "throughput_rps" } }, "Function": 1 } },
+              "queryRef": "Average(anomaly_results.throughput_rps)",
+              "nativeQueryRef": "Average of throughput_rps"
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
+            {
+              "field": { "Column": { "Expression": { "SourceRef": { "Entity": "anomaly_results" } }, "Property": "component" } },
+              "queryRef": "anomaly_results.component",
+              "nativeQueryRef": "component"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

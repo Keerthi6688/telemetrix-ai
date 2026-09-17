@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "TelemetrixAI_Dashboard"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "c4f2a3b5-7d9e-4f0a-8b1c-2d3e4f5a6b7c"
+  }
+}
