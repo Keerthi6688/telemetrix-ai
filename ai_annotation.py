@@ -129,7 +129,7 @@ def try_gemini(summaries):
         return None
 
 
-def try_ollama(summaries, model="llama3:8b", host="http://localhost:11434"):
+def try_ollama(summaries, model="llama3.2:1b", host="http://localhost:11434", timeout=60):
     try:
         import requests
 
@@ -143,7 +143,7 @@ def try_ollama(summaries, model="llama3:8b", host="http://localhost:11434"):
         resp = requests.post(
             f"{host}/api/generate",
             json={"model": model, "prompt": prompt, "stream": False},
-            timeout=8,
+            timeout=timeout,
         )
         resp.raise_for_status()
         return resp.json().get("response")
